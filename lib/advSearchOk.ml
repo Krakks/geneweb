@@ -344,6 +344,12 @@ let advanced_search conf base max_answers =
         loop (match_person acc (pget conf base ip) search_type) l
     in
     loop ([], 0) slist
+  else if gets "sosa_filter" <> "" then
+    let loaded = ref false in
+    if not !loaded then (Perso.build_sosa_ht conf base ; loaded := true);
+    let l = Perso.get_sosa_person_list base in
+    let len = List.length l in
+    l, len
   else
     Gwdb.Collection.fold_until
       (fun (_, len) -> len <= max_answers)

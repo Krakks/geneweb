@@ -1,0 +1,198 @@
+<html>
+<h2>gw_search_avance</h2>
+
+{%- macro columns (s, m, l, xl) -%}
+  small-{{ s }} medium-{{ m }} large-{{ l }} {% if xl %}xlarge-{{ xl }}{% endif %} columns
+{%- endmacro -%}
+
+{%- macro event_checkbox (name, label, small, medium, large, xlarge, class) -%}
+  <div class="{{ columns (small, medium, large, xlarge) }} {{ class }}">
+    <input id="{{ name }}" name="{{ name }}" type="checkbox" checked="checked"><label for="{{ name }}">{{ label }}</label>
+  </div>
+{%- endmacro event_checkbox -%}
+
+{%- macro date_place (title, prefix, tooltip=false) -%}
+  <div class="{{ columns (12, 12, 6) }}">
+    {%- if title %}<h4>{{ title }}</h4>{% endif -%}
+    <div class="row">
+      <div class="{{ columns (12, 3, 3, 2) }}">
+        <label for="{{ prefix }}place" class="inline no-margin-bottom">{{ 'place:'|trans|capitalize }}</label>
+      </div>
+      <div class="{{ columns (10, 8, 8) }} end">
+        <input type="text" name="{{ prefix }}place" id="{{ prefix }}place" size="40" maxlength="200">
+      </div>
+      {% if tooltip %}
+      <span data-tooltip="" class="has-tip icon-help" title="{{ 'you can enter a place'|trans|capitalize }}">&nbsp;</span>
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="{{ columns (12, 3, 3, 2) }}">
+        <label for="{{ prefix }}date1_yyyy" class="inline no-margin-bottom">{{ 'years:'|trans|capitalize }}</label>
+      </div>
+      <div class="{{ columns (12, 8, 9, 10) }} end inputs-date-inline">
+        <input type="text" name="{{ prefix }}date1_yyyy" placeholder="{{ 'min.'|trans|capitalize }}" id="{{ prefix }}date1_yyyy" size="5" maxlength="5">
+        <input type="hidden" name="{{ prefix }}date1_mm" size="2" maxlength="2" readonly>
+        <input type="hidden" name="{{ prefix }}date1_dd" size="2" maxlength="2" readonly>
+        <span class="ml mr">{{ 'to'|trans }}</span>
+        <input type="text" name="{{ prefix }}date2_yyyy" placeholder="{{ 'max.'|trans|capitalize }}" size="5" maxlength="5">
+        <input type="hidden" name="{{ prefix }}date2_mm" size="2" maxlength="2" readonly>
+        <input type="hidden" name="{{ prefix }}date2_dd" size="2" maxlength="2" readonly>
+        {% if tooltip %}
+        <span data-tooltip="" class="has-tip icon-help" title="{{ 'hint: you can fill only one field'|trans|capitalize }}">&nbsp;</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{%- endmacro -%}
+
+<div id="gw-advanced-search-panel"
+     ng-controller="GntGenewebAdvancedSearchController as asCtrl"
+     class="panel gray">
+  <div class="row">
+    <form method="post" action="{{ conf.command }}">
+      <input type="hidden" name="m" value="AS_OK">
+      <input type="hidden" name="search_type" value="{{ '{{' }} asCtrl.searchType }}">
+      <input name="max" size="3" value="99999" maxlength="5" type="hidden">
+      {%- if env.pz && env.nz -%}
+        <input type="hidden" name="pz" value="{{env.pz}}">
+        <input type="hidden" name="nz" value="{{env.nz}}">
+      {%- endif -%}
+      <div class="row section">
+        <div class="{{ columns (12, 12, 12) }}">
+          <h3>{{ 'etat civil'|trans|capitalize }}</h3>
+          <div class="row">
+            <div class="{{ columns (12, 12, 6) }}">
+              <div class="row">
+                <div class="{{ columns (12, 3, 3, 2) }}">
+                  <label for="sex" class="inline no-margin-bottom">{{ 'sex'|trans|capitalize }}{{ ':'|trans }}</label>
+                </div>
+                <div class="{{ columns (8, 4, 4, 3) }} end">
+                  <select id="sex" name="sex">
+                    <option value="M">{{ 'homme/femme'|trans(0)|capitalize }}</option>
+                    <option value="F">{{ 'homme/femme'|trans(1)|capitalize }}</option>
+                    <option value="N" selected="selected">{{ 'indifferent'|trans|capitalize }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="{{ columns (12, 3, 3, 2) }}">
+                  <label for="surname" class="inline no-margin-bottom">{{ 'surname/surnames'|trans(0)|capitalize }}{{ ':'|trans }}</label>
+                </div>
+                <div class="{{ columns (10, 8, 8) }} end">
+                  <input type="text" name="surname" id="surname" size="40" maxlength="200">
+                </div>
+              </div>
+              <div class="row">
+                <div class="{{ columns (12, 3, 3, 2) }}">
+                  <label for="first_name" class="inline no-margin-bottom">{{ 'first name/first names'|trans(0)|capitalize }}{{ ':'|trans }}</label>
+                </div>
+                <div class="{{ columns (10, 8, 8) }} end">
+                  <input type="text" name="first_name" id="first_name" size="40" maxlength="200">
+                </div>
+              </div>
+            </div>
+            <div class="{{ columns (12, 12, 6) }}">
+              <div class="row">
+                <div class="{{ columns (12, 3, 3, 2) }}">
+                  <label for="married" class="inline no-margin-bottom">{{ 'married:'|trans|capitalize }}</label>
+                </div>
+                <div class="{{ columns (8, 8, 4, 3) }} end">
+                  <select id="married" name="married">
+                    <option value="Y">{{ 'yes/no'|trans(0)|capitalize }}</option>
+                    <option value="N">{{ 'yes/no'|trans(1)|capitalize }}</option>
+                    <option value="A" selected="selected">{{ 'indifferent'|trans|capitalize }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="{{ columns (12, 3, 3, 2) }}">
+                  <label for="occu" class="inline no-margin-bottom">{{ 'occupation/occupations'|trans(0)|capitalize }}{{ ':'|trans }}</label>
+                </div>
+                <div class="{{ columns (10, 8, 8) }} end">
+                  <input type="text" name="occu" id="occu" size="40" maxlength="200">
+                </div>
+                <span data-tooltip="" class="has-tip icon-help" title="{{ 'search will be done in occupation field'|trans|capitalize }}">&nbsp;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <input id="sosa_filter" name="sosa_filter" type="checkbox">
+        <label for="sosa_filter">{{ 'Restrict the search to SOSA individual'|trans|capitalize }}</label>
+      </div>
+
+      <div class="row section margin-bottom-large">
+        <div class="{{ columns (12, 12, 12) }}">
+          <h3>{{ 'events'|trans|capitalize }}</h3>
+          <div class="checkbox-wrapper">
+            <div>
+              <span class="checkbox-container" ng-class="{active: 'OR' === asCtrl.searchType}">
+                <input ng-model="asCtrl.searchType" id="search-type-or" type="radio" name="search_type" value="OR" class="radio">
+              </span>
+              <label for="search-type-or">{{ 'individuals at least one event'|trans|capitalize }}</label>
+              <div class="input-label-example">{{ 'individuals at least one event example'|trans|capitalize }}</div>
+            </div>
+          </div>
+          <div class="checkbox-wrapper">
+            <div>
+              <span class="checkbox-container" ng-class="{active: 'AND' === asCtrl.searchType}">
+                <input ng-model="asCtrl.searchType" id="search-type-and" type="radio" name="search_type" value="AND" class="radio">
+              </span>
+              <label for="search-type-and">{{ 'individuals all events'|trans|capitalize }}</label>
+              <div class="input-label-example">{{ 'individuals all events example'|trans|capitalize }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="'OR' === asCtrl.searchType" class="ng-hide">
+        <div class="row">
+
+          {{ date_place (null, '', tooltip=true) }}
+
+          <div class="row">
+            <div class="{{ columns (12, 12, 6) }}">
+              <div class="row">
+                {{ event_checkbox ('event_birth', 'birth'|trans|capitalize, 12, 4, 4, 3) }}
+                {{ event_checkbox ('event_bapt', 'baptism'|trans|capitalize, 12, 4, 4, 3, "end") }}
+              </div>
+              <div class="row">
+                {{ event_checkbox ('event_marriage', 'mariage(s)'|trans|capitalize, 12, 12, 12, 12) }}
+              </div>
+              <div class="row">
+                {{ event_checkbox ('event_death', 'death'|trans|capitalize, 12, 4, 4, 3) }}
+                {{ event_checkbox ('event_burial', 'burial'|trans|capitalize, 12, 4, 4, 3, "end") }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-show="'AND' === asCtrl.searchType" class="ng-hide">
+        <div class="row">
+          {{ date_place ('birth'|trans|capitalize, 'birth_', tooltip=true) }}
+          {{ date_place ('baptism'|trans|capitalize, 'bapt_') }}
+        </div>
+        <div class="row">
+          {{ date_place ('mariage(s)'|trans|capitalize, 'marriage_') }}
+        </div>
+        <div class="row">
+          {{ date_place ('death'|trans|capitalize, 'death_') }}
+          {{ date_place ('burial'|trans|capitalize, 'burial_') }}
+        </div>
+      </div>
+
+      <hr class="default">
+
+      <div class="row">
+        <div class="columns small-only-text-center text-right">
+          <button type="submit" class="medium secondary no-margin-bottom">
+            {%--%}{{ 'search in tree'|trans|capitalize }}{%--%}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

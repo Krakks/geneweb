@@ -352,6 +352,18 @@ let build_sosa_ht conf base =
   | None -> ()
 
 (* ******************************************************************** *)
+(*  [Fonc] get_sosa_list : base -> person list                          *)
+(** [Description] : Retourne la liste des personnes sosa
+    [Args] :
+      - base : base de donnée
+    [Retour] :
+      - sosa_person list : retourne une liste vide s'il n'y a pas de sosa.*)
+(* ******************************************************************** *)
+let get_sosa_person_list base =
+  let sosa_list = Hashtbl.fold (fun k v acc -> (v, k) :: acc) sosa_ht [] in
+  (List.fold_left (fun l (_, ip) -> (poi base ip) :: l) [] sosa_list)
+
+(* ******************************************************************** *)
 (*  [Fonc] next_sosa : Sosa.t -> Sosa.t               *)
 (** [Description] : Recherche le sosa suivant
     [Args] :
