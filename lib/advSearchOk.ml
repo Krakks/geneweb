@@ -326,7 +326,25 @@ let advanced_search conf base max_answers =
     else acc
   in
   let list, len =
-  if gets "first_name" <> "" || gets "surname" <> "" then
+  if gets "sosa_filter" <> "" then
+    match Util.find_sosa_ref conf base with
+      Some sosa_ref ->
+        let ip_ref = Gwdb.get_iper sosa_ref in
+        let l = 
+          let rec get_list ip acc =
+            match get_parents (Gwdb.poi base ip) with
+              Some ifam ->
+                let fam = foi base ifam in
+                let fath, moth = get_father fam, get_mother fam in
+                let mother_list = get_list moth [Gwdb.poi base ip] in
+                get_list fath (acc @ mother_list)
+            | None -> (Gwdb.poi base ip) :: acc
+          in get_list ip_ref []
+        in
+        let l, len = List.fold_left (fun acc p -> match_person acc p search_type) ([], 0) l in
+        l, len
+    | None -> [], 0
+  else if gets "first_name" <> "" || gets "surname" <> "" then
     let (slist, _) =
       if gets "first_name" <> "" then
         Some.persons_of_fsname conf base base_strings_of_first_name
@@ -344,12 +362,6 @@ let advanced_search conf base max_answers =
         loop (match_person acc (pget conf base ip) search_type) l
     in
     loop ([], 0) slist
-  else if gets "sosa_filter" <> "" then
-    let loaded = ref false in
-    if not !loaded then (Perso.build_sosa_ht conf base ; loaded := true);
-    let l = Perso.get_sosa_person_list base in
-    let len = List.length l in
-    l, len
   else
     Gwdb.Collection.fold_until
       (fun (_, len) -> len <= max_answers)

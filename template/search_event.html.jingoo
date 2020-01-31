@@ -120,7 +120,7 @@
 
       <div>
         <input id="sosa_filter" name="sosa_filter" type="checkbox">
-        <label for="sosa_filter">{{ 'Restrict the search to SOSA individual'|trans|capitalize }}</label>
+        <label for="sosa_filter">{{ 'Restrict the search to SOSA individuals'|trans|capitalize }}</label>
       </div>
 
       <div class="row section margin-bottom-large">

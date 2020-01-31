@@ -28,7 +28,6 @@ val links_to_ind :
 val build_sosa_tree_ht : config -> base -> person -> unit
 val build_sosa_ht : config -> base -> unit
 val get_sosa_person : person -> Sosa.t
-val get_sosa_person_list: base -> person list
 val get_single_sosa : config -> base -> person -> Sosa.t
 val print_sosa : config -> base -> person -> bool -> unit
 
